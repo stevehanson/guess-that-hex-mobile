@@ -4,6 +4,7 @@ import { connect, Provider } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { createGame, joinGame } from './reducers/game'
 import globalStyle from './globalStyle'
+import StorybookUI from '../storybook';
 
 class App extends React.Component {
   state = {
@@ -23,6 +24,10 @@ class App extends React.Component {
   render() {
     const { inputCount } = this.state
     const { gameId, hex } = this.props
+
+    if(this.state.storyBook) {
+      return <StorybookUI />
+    }
 
     return (
       <View style={styles.page}>
@@ -46,6 +51,8 @@ class App extends React.Component {
               <View style={{ marginTop: 36, width: 100, height: 100, backgroundColor: hex }}>
                 {hex}
               </View>
+              <Button style={styles.storybook} onPress={e => this.setState({ storyBook: true })} title="Storybook">Enter Storybook</Button>
+
             </View>
           </View>
         </View>
@@ -86,6 +93,9 @@ const styles = StyleSheet.create({
     width: 300,
     maxWidth: '90%',
     height: 92,
+  },
+  storybook: {
+    marginTop: 24
   },
   // createContainer: {
   //   marginBottom: '2em'

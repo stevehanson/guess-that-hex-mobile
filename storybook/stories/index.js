@@ -9,15 +9,22 @@ import Button from './Button';
 import CenterView from './CenterView';
 import Welcome from './Welcome';
 import WaitingForPlayers from '../../src/WaitingForPlayers'
+import GameGuessing from '../../src/GameGuessing'
 
-players = [{ name: 'Stephen' }, { name: 'Jessica' }]
+const noop = () => {}
+const players = [{ name: 'Stephen' }, { name: 'Dawn', guess: 'yellow', }, { name: 'Frasier', guess: '#ff0044' }]
+
+storiesOf('GameGuessing', module)
+  .add('game', () => (
+    <GameGuessing hex="#ff88aa" players={players} onReveal={noop} creator={true} />
+  ));
 
 storiesOf('WaitingForPlayers', module)
   .add('with players', () => (
-    <WaitingForPlayers players={players} creator={false} onStart={() => {}} />
+    <WaitingForPlayers players={players} creator={false} onStart={noop} />
   ))
   .add('with players as creator', () => (
-    <WaitingForPlayers players={players} creator={true} onStart={() => {}} />
+    <WaitingForPlayers players={players} creator={true} onStart={noop} />
   ))
 
 storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
