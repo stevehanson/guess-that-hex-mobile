@@ -1,8 +1,8 @@
 const globalStyle = {
   padding: {
-    default: '2em'
+    default: 24,
   },
-  borderRadius: '4px',
+  borderRadius: 4,
   colors: {
     almostWhite: '#fafafa',
     primary: 'tomato'
@@ -10,13 +10,16 @@ const globalStyle = {
   label: {
     display: 'block',
     fontWeight: '600',
-    marginBottom: '0.4em'
+    marginBottom: 8
   },
   input: {
     width: '100%',
-    fontSize: '1.1em',
+    fontSize: 18,
     opacity: 0.8,
-    padding: '0.5em 1em',
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 16,
+    paddingRight: 16,
     backgroundColor: 'rgba(230, 230, 230, 0.4)',
     borderTop: 'none',
     borderRight: 'none',
