@@ -1,3 +1,5 @@
+_Guess that Hex_ is a multiplayer game that I made just for fun. A color is presented, and the players try to guess the color's hex value. The original game was built for the web ([See repo](https://github.com/stevehanson/guess-that-hex)). This project brings the game to a mobile app.
+
 This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app).
 
 Below you'll find information about performing common tasks. The most recent version of this guide is available [here](https://github.com/react-community/create-react-native-app/blob/master/react-native-scripts/template/README.md).
