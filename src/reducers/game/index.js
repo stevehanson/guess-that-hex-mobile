@@ -1,18 +1,18 @@
-import Firebase from "../../firebase/index";
-import tinycolor from "tinycolor2";
-import { mapFirebaseGameToGame, mapFirebaseGames } from "./util";
-import moment from "moment";
+import Firebase from '../../firebase/index';
+import tinycolor from 'tinycolor2';
+import { mapFirebaseGameToGame, mapFirebaseGames } from './util';
+import moment from 'moment';
 
-export const START_GAME = "game/start";
-export const CREATE_GAME = "game/create";
-export const REVEAL_ANSWER = "game/reveal";
-export const RESET_GAME = "game/reset";
-export const JOIN_GAME = "game/join";
-export const SUBMIT_GUESS = "game/submit_guess";
-export const UPDATE_GAME = "game/update";
-export const GAMES_FETCH_INIT = "game/games_fetch_init";
-export const GAMES_FETCHED = "game/games_fetched";
-export const GAMES_FETCH_FAILED = "game/games_fetch_failed";
+export const START_GAME = 'game/start';
+export const CREATE_GAME = 'game/create';
+export const REVEAL_ANSWER = 'game/reveal';
+export const RESET_GAME = 'game/reset';
+export const JOIN_GAME = 'game/join';
+export const SUBMIT_GUESS = 'game/submit_guess';
+export const UPDATE_GAME = 'game/update';
+export const GAMES_FETCH_INIT = 'game/games_fetch_init';
+export const GAMES_FETCHED = 'game/games_fetched';
+export const GAMES_FETCH_FAILED = 'game/games_fetch_failed';
 
 const firebase = new Firebase();
 
@@ -24,7 +24,7 @@ const initialState = {
   players: [],
   hex: null,
   guess: null,
-  latestGames: []
+  latestGames: [],
 };
 
 export default function reducers(state = initialState, action) {
@@ -39,7 +39,7 @@ export default function reducers(state = initialState, action) {
       return {
         ...state,
         creator: action.payload.creator,
-        id: action.payload.id
+        id: action.payload.id,
       };
     case SUBMIT_GUESS:
       return { ...state, guess: action.payload.guess };
@@ -50,7 +50,7 @@ export default function reducers(state = initialState, action) {
         ...state,
         guess: null,
         revealed: false,
-        hex: action.payload.hex
+        hex: action.payload.hex,
       };
     case GAMES_FETCH_INIT:
       return { ...state, latestGames: [], loadingGames: true };
@@ -72,14 +72,14 @@ export const createGame = name => {
       revealed: false,
       players: [],
       createdAt: moment().toISOString(),
-      createdBy: name
+      createdBy: name,
     };
 
     const id = firebase.createGame(gameVals);
 
     dispatch({
       type: CREATE_GAME,
-      payload: { ...gameVals, id }
+      payload: { ...gameVals, id },
     });
 
     subscribeToAndJoinGame(dispatch, getState, id, name);
@@ -92,7 +92,7 @@ export const joinGame = (id, name, creator = false) => {
     subscribeToAndJoinGame(dispatch, getState, id, name);
     dispatch({
       type: JOIN_GAME,
-      payload: { id, creator }
+      payload: { id, creator },
     });
 
     // dispatch(push(`/game/${id}`));
@@ -108,11 +108,11 @@ const subscribeToAndJoinGame = (dispatch, getState, id, name) => {
     }
 
     const game = mapFirebaseGameToGame(firebaseGame, getState());
-    console.log("game updated", game, firebaseGame);
+    console.log('game updated', game, firebaseGame);
 
     dispatch({
       type: UPDATE_GAME,
-      payload: game
+      payload: game,
     });
   });
 };
@@ -144,10 +144,10 @@ export const fetchLatestGames = () => {
   return (dispatch, getState) => {
     dispatch({ type: GAMES_FETCH_INIT });
     firebase.fetchLatestGames(firebaseGames => {
-      const recent = moment().subtract(30, "minutes");
+      const recent = moment().subtract(30, 'minutes');
       let games = mapFirebaseGames(firebaseGames)
         .filter(
-          game => game.createdAt && moment(game.createdAt).isAfter(recent)
+          game => game.createdAt && moment(game.createdAt).isAfter(recent),
         )
         .reverse();
 

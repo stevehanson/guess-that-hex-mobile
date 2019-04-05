@@ -8,16 +8,25 @@ import { linkTo } from '@storybook/addon-links';
 import Button from './Button';
 import CenterView from './CenterView';
 import Welcome from './Welcome';
-import WaitingForPlayers from '../../src/WaitingForPlayers'
-import GameGuessing from '../../src/GameGuessing'
+import WaitingForPlayers from '../../src/WaitingForPlayers';
+import GameGuessing from '../../src/GameGuessing';
+import GameView from '../../src/GameView';
+import { SafeAreaView, StyleSheet } from 'react-native';
 
-const noop = () => {}
-const players = [{ name: 'Stephen' }, { name: 'Dawn', guess: 'yellow', }, { name: 'Frasier', guess: '#ff0044' }]
-
-storiesOf('GameGuessing', module)
-  .add('game', () => (
-    <GameGuessing hex="#ff88aa" players={players} onReveal={noop} creator={true} />
-  ));
+const noop = () => {};
+const players = [
+  { name: 'Stephen' },
+  { name: 'Dawn', guess: 'yellow' },
+  { name: 'Frasier', guess: '#ff0044' },
+];
+storiesOf('GameGuessing', module).add('game', () => (
+  <GameGuessing
+    hex="#ff88aa"
+    players={players}
+    onReveal={noop}
+    creator={true}
+  />
+));
 
 storiesOf('WaitingForPlayers', module)
   .add('with players', () => (
@@ -25,9 +34,11 @@ storiesOf('WaitingForPlayers', module)
   ))
   .add('with players as creator', () => (
     <WaitingForPlayers players={players} creator={true} onStart={noop} />
-  ))
+  ));
 
-storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
+storiesOf('Welcome', module).add('to Storybook', () => (
+  <Welcome showApp={linkTo('Button')} />
+));
 
 storiesOf('Button', module)
   .addDecorator(getStory => <CenterView>{getStory()}</CenterView>)
@@ -41,3 +52,15 @@ storiesOf('Button', module)
       <Text>😀 😎 👍 💯</Text>
     </Button>
   ));
+
+storiesOf('Game', module)
+  .addDecorator(story => (
+    <SafeAreaView style={style.paddedView}>{story()}</SafeAreaView>
+  ))
+  .add('game with no name', () => <GameView />);
+
+const style = StyleSheet.create({
+  paddedView: {
+    paddingTop: 200,
+  },
+});

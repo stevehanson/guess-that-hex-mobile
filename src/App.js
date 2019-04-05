@@ -1,15 +1,24 @@
-import React from "react";
-import { Image, StyleSheet, Text, View, Button, TextInput } from "react-native";
-import { connect, Provider } from "react-redux";
-import { bindActionCreators } from "redux";
-import { createGame, joinGame } from "./reducers/game/index";
-import globalStyle from "./globalStyle";
-import StorybookUI from "../storybook/index";
+import React from 'react';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TextInput,
+  FlatList,
+} from 'react-native';
+import { connect, Provider } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { createGame, joinGame, fetchLatestGames } from './reducers/game/index';
+import globalStyle from './globalStyle';
+import StorybookUI from '../storybook/index';
+import GameView from './GameView';
 
 class App extends React.Component {
   state = {
     inputCount: 1,
-    name: "Stephen App"
+    name: 'Stephen App',
   };
 
   addToCount = () => {
@@ -20,6 +29,14 @@ class App extends React.Component {
   createGame = () => {
     this.props.createGame(this.state.name);
   };
+
+  fetchLatestGame = () => {
+    this.props.fetchLatestGames();
+  };
+
+  componentDidMount() {
+    this.fetchLatestGame();
+  }
 
   render() {
     const { inputCount } = this.state;
@@ -33,7 +50,7 @@ class App extends React.Component {
       <View style={styles.page}>
         <View style={styles.container}>
           <View style={styles.content}>
-            <Image style={styles.logo} source={require("./logo.png")} />
+            <Image style={styles.logo} source={require('./logo.png')} />
           </View>
           <View style={[styles.content, { paddingTop: 0 }]}>
             <Text style={styles.heading}>Welcome to Guess that Hex!</Text>
@@ -48,12 +65,13 @@ class App extends React.Component {
               </Button>
 
               <Text>Game ID: {gameId}</Text>
+              {this.GameListings()}
               <View
                 style={{
                   marginTop: 36,
                   width: 100,
                   height: 100,
-                  backgroundColor: hex
+                  backgroundColor: hex,
                 }}
               >
                 {hex}
@@ -71,43 +89,52 @@ class App extends React.Component {
       </View>
     );
   }
+
+  GameListings = () => {
+    return (
+      <FlatList
+        renderItem={({ game }) => <GameView {...game} />}
+        data={this.props.latestGames}
+      />
+    );
+  };
 }
 
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "tomato",
-    padding: 24
+    justifyContent: 'center',
+    backgroundColor: 'tomato',
+    padding: 24,
   },
   container: {
-    backgroundColor: "#fafafa",
+    backgroundColor: '#fafafa',
     borderRadius: 4,
     marginTop: 24,
-    marginBottom: 24
+    marginBottom: 24,
   },
   header: {
-    display: "flex",
-    justifyContent: "center",
-    backgroundColor: "#eee",
-    paddingTop: 20
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: '#eee',
+    paddingTop: 20,
   },
   heading: {
     fontSize: 20,
-    fontWeight: "600",
+    fontWeight: '600',
     marginBottom: 24,
-    textAlign: "center"
+    textAlign: 'center',
   },
   content: {
-    padding: 24
+    padding: 24,
   },
   logo: {
     width: 300,
-    maxWidth: "90%",
-    height: 92
+    maxWidth: '90%',
+    height: 92,
   },
   storybook: {
-    marginTop: 24
+    marginTop: 24,
   },
   // createContainer: {
   //   marginBottom: '2em'
@@ -139,23 +166,25 @@ const styles = StyleSheet.create({
   // },
   logo: {
     width: 280,
-    height: 80
-  }
+    height: 80,
+  },
 });
 
 const mapStateToProps = state => {
   return {
     gameId: state.game.id,
-    hex: state.game.hex
+    hex: state.game.hex,
+    latestGames: state.game.latestGames,
   };
 };
 
 const mapDispatchToProps = {
   createGame,
-  joinGame
+  joinGame,
+  fetchLatestGames,
 };
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(App);
