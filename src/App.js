@@ -2,9 +2,9 @@ import React from "react";
 import { Image, StyleSheet, Text, View, Button, TextInput } from "react-native";
 import { connect, Provider } from "react-redux";
 import { bindActionCreators } from "redux";
-import { createGame, joinGame } from "./reducers/game";
+import { createGame, joinGame } from "./reducers/game/index";
 import globalStyle from "./globalStyle";
-import StorybookUI from "../storybook";
+import StorybookUI from "../storybook/index";
 
 class App extends React.Component {
   state = {
