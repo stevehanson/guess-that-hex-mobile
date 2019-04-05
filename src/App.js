@@ -150,14 +150,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      createGame,
-      joinGame
-    },
-    dispatch
-  );
+const mapDispatchToProps = {
+  createGame,
+  joinGame
+};
 
 export default connect(
   mapStateToProps,

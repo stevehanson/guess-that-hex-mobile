@@ -32,9 +32,7 @@ class WaitingForPlayers extends Component {
   render() {
     const { gameId, players, creator, onStart } = this.props;
     const { loadingDots, copied } = this.state;
-    const joinUrl = `${window.location.protocol}//${
-      window.location.host
-    }/join/${encodeURIComponent(gameId)}`;
+    const joinUrl = `https://hex.shanson.co/join/${encodeURIComponent(gameId)}`;
 
     return (
       <View style={styles.container}>

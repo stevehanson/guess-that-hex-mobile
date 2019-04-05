@@ -23,7 +23,8 @@ const initialState = {
   revealed: false,
   players: [],
   hex: null,
-  guess: null
+  guess: null,
+  latestGames: []
 };
 
 export default function reducers(state = initialState, action) {
