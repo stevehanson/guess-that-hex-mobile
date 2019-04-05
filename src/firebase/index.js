@@ -1,64 +1,61 @@
-import firebase from './setup';
-import { compact } from 'lodash'
-import { closestColor } from '../util/colorCalculations'
+import firebase from "./setup";
 
 class Firebase {
-  createGame(hex) {
-    const gamesRef = firebase.database().ref('games');
-    const gameRef = gamesRef.push({
-      hex,
-      started: false,
-      revealed: false,
-      players: []
-    })
-
-    return gameRef.key
+  createGame(gameVals) {
+    const gamesRef = firebase.database().ref("games");
+    const gameRef = gamesRef.push(gameVals);
+    return gameRef.key;
   }
 
   subscribeToAndJoinGame(gameId, playerName, onUpdate) {
-    this.gameId = gameId
-    this.gameRef = firebase.database().ref(`games/${gameId}`)
-    this.gameRef.on('value', snapshot => {
-      const game = snapshot.val()
-      const players = Object.entries(game.players || {}).map(([id, player]) => (
-        { ...player, id }
-      ))
-
-      if(game.revealed) {
-        const colors = compact(players.map(p => p.guess))
-        const winnerColor = closestColor(game.hex, colors)
-        players.find(p => p.guess === winnerColor).winner = true
+    let playerAdded = false;
+    this.gameId = gameId;
+    this.gameRef = firebase.database().ref(`games/${gameId}`);
+    this.gameRef.on("value", snapshot => {
+      const game = snapshot.val();
+      if (game && !playerAdded) {
+        playerAdded = true;
+        this.addPlayerToGame(playerName);
+        return; // this is necessary so we don't call onUpdate with race condition
       }
 
-      game.players = players
-      onUpdate(game)
+      onUpdate(game);
     });
-
-    this.addPlayerToGame(playerName)
   }
 
   addPlayerToGame(name) {
-    this.playerRef = firebase.database().ref(`games/${this.gameId}/players`).push({ name })
-    this.playerId = this.playerRef.key
+    this.playerRef = firebase
+      .database()
+      .ref(`games/${this.gameId}/players`)
+      .push({ name });
+    this.playerId = this.playerRef.key;
   }
 
   submitGuess(guess) {
-    console.log(`submitting ${guess}`)
-    this.playerRef.update({ guess })
+    this.playerRef.update({ guess });
   }
 
   updateGame(values) {
-    this.gameRef.update(values)
+    this.gameRef.update(values);
   }
 
   resetGame(hex, players) {
     players.forEach(player => {
-      console.log('updating player ', player.name)
-      firebase.database().ref(`games/${this.gameId}/players/${player.id}`).update({ guess: null })
+      firebase
+        .database()
+        .ref(`games/${this.gameId}/players/${player.id}`)
+        .update({ guess: null });
+    });
+    this.updateGame({ started: true, revealed: false, hex });
+  }
 
-    })
-    this.updateGame({ started: true, revealed: false, hex })
+  fetchLatestGames(callback) {
+    const gamesRef = firebase
+      .database()
+      .ref("games")
+      .limitToLast(10);
+    gamesRef.on("value", snapshot => callback(snapshot.val()));
   }
 }
 
-export default Firebase
+export default Firebase;
